@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Livraria AFI{% endblock %}
+{% block content %}
+<div class="afi-page-head mb-4">
+    <div>
+        <span class="afi-eyebrow">Painel geral</span>
+        <h1 class="afi-page-title">Dashboard</h1>
+        <p class="afi-page-subtitle">Acompanhe catálogo, estoque e valor total em um visual limpo e profissional.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'cadastrar_livro' %}" class="afi-btn afi-btn-primary">+ Novo livro</a>
+        <a href="{% url 'gestao_estoque' %}" class="afi-btn afi-btn-soft">Gestão de estoque</a>
+    </div>
+</div>
+
+<div class="row g-3 g-lg-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="afi-stat-card">
+            <div class="afi-stat-icon blue">📘</div>
+            <div>
+                <div class="afi-stat-number">{{ total_livros }}</div>
+                <div class="afi-stat-label">Total de livros</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="afi-stat-card">
+            <div class="afi-stat-icon gold">📦</div>
+            <div>
+                <div class="afi-stat-number">{{ estoque_total }}</div>
+                <div class="afi-stat-label">Quantidade em estoque</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="afi-stat-card">
+            <div class="afi-stat-icon green">💰</div>
+            <div>
+                <div class="afi-stat-number">R$ {{ valor_total|floatformat:2 }}</div>
+                <div class="afi-stat-label">Valor total do estoque</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="afi-stat-card">
+            <div class="afi-stat-icon rose">⚠️</div>
+            <div>
+                <div class="afi-stat-number">{{ estoque_baixo }}</div>
+                <div class="afi-stat-label">Estoque baixo</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <section class="afi-panel afi-fade-in h-100">
+            <div class="afi-panel-head">
+                <div>
+                    <h2>Livros com estoque baixo</h2>
+                    <p>Itens que precisam de reposição rápida.</p>
+                </div>
+                <a href="{% url 'lista_livros' %}" class="afi-btn afi-btn-primary">Ver todos os livros</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table afi-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Estoque</th>
+                            <th>Preço</th>
+                            <th>Valor total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for livro in livros_estoque_baixo %}
+                        <tr>
+                            <td>#{{ livro.id }}</td>
+                            <td>{{ livro.titulo }}</td>
+                            <td>{{ livro.autor }}</td>
+                            <td><span class="afi-chip danger">{{ livro.estoque }}</span></td>
+                            <td>R$ {{ livro.preco }}</td>
+                            <td>R$ {{ livro.valor_em_estoque|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum item com estoque baixo no momento.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-xl-4">
+        <section class="afi-panel afi-fade-in h-100">
+            <div class="afi-panel-head simple">
+                <div>
+                    <h2>Atualizações recentes</h2>
+                    <p>Últimos livros alterados no catálogo.</p>
+                </div>
+            </div>
+            <div class="afi-activity-list">
+                {% for livro in livros_recentes %}
+                <article class="afi-activity-item">
+                    <div class="afi-activity-icon">📗</div>
+                    <div>
+                        <h3>{{ livro.titulo }}</h3>
+                        <p>{{ livro.autor }} · {{ livro.categoria }}</p>
+                        <small>Atualizado em {{ livro.data_atualizacao|date:'d/m/Y H:i' }}</small>
+                    </div>
+                </article>
+                {% empty %}
+                <p class="text-muted mb-0">Sem movimentações recentes.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
