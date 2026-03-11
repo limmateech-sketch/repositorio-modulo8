@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Entrar | Livraria AFI{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 72vh;">
+    <div class="col-lg-5 col-xl-4">
+        <section class="afi-login-card afi-fade-in">
+            <div class="text-center mb-4">
+                <img src="{% static 'img/logo-livraria-afi.svg' %}" alt="Livraria AFI" class="afi-login-logo mb-3">
+                <h1 class="afi-login-title">Livraria AFI</h1>
+                <p class="afi-login-subtitle">Acesse para gerenciar seu estoque com uma experiência simples e profissional.</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="alert alert-danger border-0 rounded-4">Usuário ou senha inválidos.</div>
+            {% endif %}
+
+            <form method="post" class="d-flex flex-column gap-3">
+                {% csrf_token %}
+                <div>
+                    <label class="form-label">Usuário</label>
+                    <input type="text" name="username" class="form-control afi-input" required>
+                </div>
+                <div>
+                    <label class="form-label">Senha</label>
+                    <input type="password" name="password" class="form-control afi-input" required>
+                </div>
+                <button class="afi-btn afi-btn-primary w-100 justify-content-center">Entrar</button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}

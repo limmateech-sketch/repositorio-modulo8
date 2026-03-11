@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Livros | Livraria AFI{% endblock %}
+{% block content %}
+<div class="afi-page-head mb-4">
+    <div>
+        <span class="afi-eyebrow">Catálogo</span>
+        <h1 class="afi-page-title">Gerenciar livros</h1>
+        <p class="afi-page-subtitle">Consulte, edite e mantenha seu acervo organizado com rapidez.</p>
+    </div>
+    <a href="{% url 'cadastrar_livro' %}" class="afi-btn afi-btn-primary">+ Novo livro</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="afi-mini-stat"><span>Total de livros</span><strong>{{ total_livros }}</strong></div></div>
+    <div class="col-md-4"><div class="afi-mini-stat"><span>Itens em estoque</span><strong>{{ estoque_total }}</strong></div></div>
+    <div class="col-md-4"><div class="afi-mini-stat"><span>Estoque baixo</span><strong>{{ estoque_baixo }}</strong></div></div>
+</div>
+
+<section class="afi-panel afi-fade-in">
+    <form method="get" class="row g-3 align-items-center mb-4">
+        <div class="col-lg-10">
+            <input type="text" name="q" value="{{ busca }}" class="form-control afi-input afi-search" placeholder="Buscar por título, autor, ISBN ou categoria">
+        </div>
+        <div class="col-lg-2 d-grid">
+            <button class="afi-btn afi-btn-soft">Buscar</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table afi-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>ISBN</th>
+                    <th>Estoque</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in page_obj %}
+                <tr>
+                    <td>#{{ livro.id }}</td>
+                    <td>
+                        <div class="fw-semibold">{{ livro.titulo }}</div>
+                        <small class="text-muted">Atualizado em {{ livro.data_atualizacao|date:'d/m/Y H:i' }}</small>
+                    </td>
+                    <td>{{ livro.autor }}</td>
+                    <td><span class="afi-chip neutral">{{ livro.categoria }}</span></td>
+                    <td><span class="afi-chip success">R$ {{ livro.preco }}</span></td>
+                    <td>{{ livro.isbn }}</td>
+                    <td>
+                        {% if livro.estoque < 5 %}
+                        <span class="afi-chip danger">{{ livro.estoque }}</span>
+                        {% else %}
+                        <span class="afi-chip dark">{{ livro.estoque }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2 flex-wrap">
+                            <a href="{% url 'editar_livro' livro.id %}" class="afi-btn afi-btn-inline">Editar</a>
+                            <a href="{% url 'excluir_livro' livro.id %}" class="afi-btn afi-btn-danger-inline">Excluir</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center py-5 text-muted">Nenhum livro encontrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination afi-pagination mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?q={{ busca }}&page={{ page_obj.previous_page_number }}">Anterior</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?q={{ busca }}&page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?q={{ busca }}&page={{ page_obj.next_page_number }}">Próxima</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

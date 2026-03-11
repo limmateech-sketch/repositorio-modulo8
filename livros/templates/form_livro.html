@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ titulo_pagina }} | Livraria AFI{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-7 col-lg-8">
+        <section class="afi-panel afi-fade-in">
+            <div class="afi-panel-head simple">
+                <div>
+                    <h2>{{ titulo_pagina }}</h2>
+                    <p>Preencha os dados abaixo para salvar no catálogo.</p>
+                </div>
+            </div>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Título</label>
+                        {{ form.titulo }}
+                        <div class="afi-error">{{ form.titulo.errors }}</div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Autor</label>
+                        {{ form.autor }}
+                        <div class="afi-error">{{ form.autor.errors }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Preço (R$)</label>
+                        {{ form.preco }}
+                        <div class="afi-error">{{ form.preco.errors }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Categoria</label>
+                        {{ form.categoria }}
+                        <div class="afi-error">{{ form.categoria.errors }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">ISBN</label>
+                        {{ form.isbn }}
+                        <div class="afi-error">{{ form.isbn.errors }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Estoque</label>
+                        {{ form.estoque }}
+                        <div class="afi-error">{{ form.estoque.errors }}</div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between gap-3 mt-4 flex-wrap">
+                    <a href="{% url 'lista_livros' %}" class="afi-btn afi-btn-soft">← Voltar</a>
+                    <button type="submit" class="afi-btn afi-btn-primary">{{ texto_botao }}</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}

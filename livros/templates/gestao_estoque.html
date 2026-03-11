@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Gestão de Estoque | Livraria AFI{% endblock %}
+{% block content %}
+<div class="afi-page-head mb-4">
+    <div>
+        <span class="afi-eyebrow">Operações</span>
+        <h1 class="afi-page-title">Gestão de estoque</h1>
+        <p class="afi-page-subtitle">Adicione ou retire quantidades com cálculo rápido do valor em estoque.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-4">
+        <section class="afi-panel afi-fade-in h-100">
+            <div class="afi-panel-head simple">
+                <div>
+                    <h2>Atualizar estoque</h2>
+                    <p>Escolha o livro, informe a operação e a quantidade.</p>
+                </div>
+            </div>
+            <form method="post" class="d-flex flex-column gap-3">
+                {% csrf_token %}
+                <div>
+                    <label class="form-label">Livro</label>
+                    {{ form.livro }}
+                </div>
+                <div>
+                    <label class="form-label">Quantidade</label>
+                    {{ form.quantidade }}
+                </div>
+                <div>
+                    <label class="form-label d-block mb-2">Operação</label>
+                    <div class="afi-radio-group">{{ form.operacao }}</div>
+                </div>
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger rounded-4 border-0 mb-0">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <button class="afi-btn afi-btn-primary w-100">Atualizar estoque</button>
+            </form>
+        </section>
+    </div>
+
+    <div class="col-xl-8">
+        <section class="afi-panel afi-fade-in h-100">
+            <div class="afi-panel-head simple">
+                <div>
+                    <h2>Resumo do estoque</h2>
+                    <p>Visão consolidada para tomada de decisão rápida.</p>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><div class="afi-mini-stat"><span>Total de livros</span><strong>{{ total_livros }}</strong></div></div>
+                <div class="col-md-4"><div class="afi-mini-stat"><span>Quantidade em estoque</span><strong>{{ estoque_total }}</strong></div></div>
+                <div class="col-md-4"><div class="afi-mini-stat"><span>Valor total</span><strong>R$ {{ valor_total|floatformat:2 }}</strong></div></div>
+            </div>
+            <div class="table-responsive">
+                <table class="table afi-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Livro</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Estoque</th>
+                            <th>Valor total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for livro in livros %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ livro.titulo }}</div>
+                                <small class="text-muted">{{ livro.autor }}</small>
+                            </td>
+                            <td><span class="afi-chip neutral">{{ livro.categoria }}</span></td>
+                            <td>R$ {{ livro.preco }}</td>
+                            <td>
+                                {% if livro.estoque < 5 %}
+                                <span class="afi-chip danger">{{ livro.estoque }}</span>
+                                {% else %}
+                                <span class="afi-chip dark">{{ livro.estoque }}</span>
+                                {% endif %}
+                            </td>
+                            <td>R$ {{ livro.valor_em_estoque|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-5 text-muted">Nenhum livro cadastrado.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

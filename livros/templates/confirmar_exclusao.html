@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Livro | Livraria AFI{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <section class="afi-panel afi-fade-in">
+            <div class="afi-panel-head simple">
+                <div>
+                    <h2>Excluir livro</h2>
+                    <p>Esta ação remove definitivamente o item do catálogo.</p>
+                </div>
+            </div>
+            <p class="mb-4">Tem certeza que deseja excluir <strong>{{ livro.titulo }}</strong>?</p>
+            <form method="post" class="d-flex gap-2 flex-wrap">
+                {% csrf_token %}
+                <a href="{% url 'lista_livros' %}" class="afi-btn afi-btn-soft">Cancelar</a>
+                <button type="submit" class="afi-btn afi-btn-danger-inline">Sim, excluir</button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
